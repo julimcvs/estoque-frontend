@@ -1,17 +1,17 @@
 <template>
-  <v-app id="inspire">
-    <v-app-bar color="primary">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-app-bar-title>Gestão de Estoque</v-app-bar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon="mdi-dots-vertical">
-      </v-btn>
-    </v-app-bar>
-
+  <head>
+  <title>Página Inicial - Elder</title>
+  <meta
+    name="description"
+    content="Página inicial do sistema de gestão de estoque Elder">
+  </head>
+  <v-layout>
     <v-main class="mt-5">
+      <div class="text-center">
+        <h1 class="text-primary">
+          Página Inicial
+        </h1>
+      </div>
       <v-container>
         <v-text-field
           autofocus
@@ -19,17 +19,25 @@
           v-model="searchText"
           hide-details="auto"
           color="primary"
-          append-icon="mdi-magnify"
           label="Pesquisar"
-        ></v-text-field>
+          append-icon="mdi-magnify"
+          id="input-pesquisar"
+        >
+        </v-text-field>
         <v-row class="mt-5">
           <v-col
+            v-if="filteredNavItems.length === 0"
+            cols="12"
+            class="text-center"
+          >
+            {{ 'Nenhum resultado encontrado' }}
+          </v-col>
+          <v-col
+            v-else
             v-for="navItem in filteredNavItems"
             :key="navItem.title"
             sm="6"
             md="4"
-            lg="3"
-            xl="2"
             cols="12"
           >
             <v-card
@@ -38,14 +46,15 @@
               color="primary"
               rounded="lg"
               variant="elevated"
-              class="w-100"
-              height="200">
+              elevation="10"
+              class="w-100 card text-wrap text-center"
+              height="300">
               <div class="h-100 d-flex align-center">
                 <v-row>
                   <v-col
                     class="d-flex justify-center"
                     cols="12">
-                    <v-icon size="35">
+                    <v-icon size="50">
                       {{ navItem.icon }}
                     </v-icon>
                   </v-col>
@@ -53,9 +62,9 @@
                     class="d-flex justify-center"
                     cols="12">
                     <div>
-                      <p class="color-secondary">
+                      <h2 class="color-secondary">
                         {{ navItem.title }}
-                      </p>
+                      </h2>
                     </div>
                   </v-col>
                 </v-row>
@@ -66,7 +75,7 @@
         </v-row>
       </v-container>
     </v-main>
-  </v-app>
+  </v-layout>
 </template>
 <script>
 export default {
@@ -101,9 +110,9 @@ export default {
           to: '/vendas'
         },
         {
-          title: 'Emitir Notas Fiscais',
-          icon: 'mdi-printer-pos',
-          to: '/notas-fiscais'
+          title: 'Relatório de Vendas',
+          icon: 'mdi-finance',
+          to: '/relatorio-vendas'
         },
       ]
     }
@@ -118,6 +127,8 @@ export default {
 
 }
 </script>
-<style>
-
+<style scoped>
+.card {
+  font-size: 30px;
+}
 </style>
