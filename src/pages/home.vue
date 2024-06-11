@@ -1,54 +1,43 @@
 <template>
   <head>
-  <title>Página Inicial - Elder</title>
-  <meta
-    name="description"
-    content="Página inicial do sistema de gestão de estoque Elder">
+    <title>Página Inicial - Elder</title>
+    <meta
+      content="Página inicial do sistema de gestão de estoque Elder"
+      name="description">
   </head>
   <v-layout>
-    <v-main class="mt-5">
+    <v-main class="mt-10">
       <div class="text-center">
         <h1 class="text-primary">
           Página Inicial
         </h1>
       </div>
       <v-container>
-        <v-text-field
-          autofocus
-          variant="outlined"
-          v-model="searchText"
-          hide-details="auto"
-          color="primary"
-          label="Pesquisar"
-          append-icon="mdi-magnify"
-          id="input-pesquisar"
-        >
-        </v-text-field>
         <v-row class="mt-5">
           <v-col
             v-if="filteredNavItems.length === 0"
-            cols="12"
             class="text-center"
+            cols="12"
           >
             {{ 'Nenhum resultado encontrado' }}
           </v-col>
           <v-col
-            v-else
             v-for="navItem in filteredNavItems"
+            v-else
             :key="navItem.title"
-            sm="6"
-            md="4"
             cols="12"
+            md="4"
+            sm="6"
           >
             <v-card
-              link
               :to="navItem.to"
-              color="primary"
-              rounded="lg"
-              variant="elevated"
-              elevation="10"
               class="w-100 card text-wrap text-center"
-              height="300">
+              color="primary"
+              elevation="10"
+              height="300"
+              link
+              rounded="lg"
+              variant="elevated">
               <div class="h-100 d-flex align-center">
                 <v-row>
                   <v-col

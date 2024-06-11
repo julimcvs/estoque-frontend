@@ -12,7 +12,7 @@
           <v-btn
             color="primary"
             prepend-icon="mdi-chevron-left"
-            size="large"
+            size="x-large"
             variant="outlined"
             @click="voltar()"
           >
@@ -35,20 +35,20 @@
                   <v-row>
                     <v-col cols="12" md="9" sm="6">
                       <v-text-field
-                        color="primary"
                         v-model="form.name"
+                        :rules="[required, maxLength]"
+                        color="primary"
+                        label="Nome"
                         prepend-inner-icon="mdi-truck"
                         required
-                        label="Nome"
-                        :rules="[required, maxLength]"
                         variant="outlined">
                         <template v-slot:append-inner>
                           <v-icon color="grey">
                             mdi-information
                           </v-icon>
                           <v-tooltip
-                            aria-labelledby="tooltip-nome"
                             activator="parent"
+                            aria-labelledby="tooltip-nome"
                             location="bottom"
                           >
                             <p id="tooltip-nome">
@@ -60,23 +60,23 @@
                     </v-col>
                     <v-col cols="12" md="3" sm="6">
                       <v-text-field
-                        color="primary"
                         v-model="form.contact"
-                        :rules="[required]"
-                        label="Contato"
                         v-mask="'(##) #####-####'"
+                        :rules="[required]"
+                        color="primary"
+                        label="Contato"
                         placeholder="(99) 99999-9999"
-                        type="text"
                         prepend-inner-icon="mdi-phone"
                         required
+                        type="text"
                         variant="outlined">
                         <template v-slot:append-inner>
                           <v-icon color="grey">
                             mdi-information
                           </v-icon>
                           <v-tooltip
-                            aria-labelledby="tooltip-contato"
                             activator="parent"
+                            aria-labelledby="tooltip-contato"
                             location="bottom"
                           >
                             <p id="tooltip-contato">
@@ -95,7 +95,7 @@
                     class="ml-5"
                     color="primary"
                     prepend-icon="mdi-plus"
-                    size="large"
+                    size="x-large"
                     type="submit"
                     variant="elevated"
                   >
@@ -110,59 +110,60 @@
     </v-main>
   </v-layout>
   <v-dialog
-    width="700"
-    v-model="dialogConfirmacao">
+    v-model="dialogConfirmacao"
+    fullscreen
+    transition="slide-x-transition">
     <v-card
-      class="container mt-5 pa-5"
+      class="container pa-5"
       elevation="5"
       variant="elevated">
-        <v-card-title>
-          <v-container class="titulo-pagina-confirmacao text-wrap text-primary">
-            Página de Confirmação - Adicionar Fornecedor
-            <v-divider class="d-block mt-5"></v-divider>
-          </v-container>
-        </v-card-title>
-        <v-card-text class="py-0">
-          <v-container class="py-0">
-            <div class="campos-confirmacao text-wrap">
-                <p class="my-2">
-                  <strong>Nome:</strong>
-                  {{ form.name }}
-                </p>
-              <p class="my-2">
-                <strong>Contato:</strong>
-                {{ form.contact }}
-              </p>
-            </div>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-container class="d-flex align-start flex-column px-0">
-            <v-btn
-              width="200"
-              class="ml-5"
-              color="primary"
-              prepend-icon="mdi-plus"
-              size="large"
-              :loading="carregando"
-              @click="confirmar()"
-              variant="elevated"
-            >
-              Confirmar
-            </v-btn>
-            <v-btn
-              width="200"
-              class="ml-5 mt-5"
-              color="primary"
-              prepend-icon="mdi-pencil"
-              size="large"
-              @click="dialogConfirmacao = false"
-              variant="outlined"
-            >
-              Editar
-            </v-btn>
-          </v-container>
-        </v-card-actions>
+      <v-card-title>
+        <v-container class="titulo-pagina-confirmacao text-wrap text-primary">
+          <h2>Página de Confirmação - Adicionar Fornecedor</h2>
+          <v-divider class="d-block mt-5"></v-divider>
+        </v-container>
+      </v-card-title>
+      <v-card-text class="py-0">
+        <v-container class="py-0">
+          <div class="campos-confirmacao text-wrap">
+            <p class="my-2">
+              <strong>Nome:</strong>
+              {{ form.name }}
+            </p>
+            <p class="my-2">
+              <strong>Contato:</strong>
+              {{ form.contact }}
+            </p>
+          </div>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-container class="d-flex align-start flex-column px-0">
+          <v-btn
+            :loading="carregando"
+            class="ml-5"
+            color="success"
+            prepend-icon="mdi-plus"
+            size="x-large"
+            variant="elevated"
+            width="250"
+            @click="confirmar()"
+          >
+            Confirmar
+          </v-btn>
+          <v-btn
+            class="ml-5 mt-5"
+            color="primary"
+            prepend-icon="mdi-pencil"
+            size="x-large"
+            variant="outlined"
+            width="250"
+            @click="dialogConfirmacao = false"
+          >
+            Editar
+          </v-btn>
+        </v-container>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -204,9 +205,9 @@ export default {
       // Submeter formulário
       this.carregando = true;
       setTimeout(() => {
-          this.carregando = false;
-          this.showSuccess('Fornecedor adicionado com sucesso!');
-          this.router.push('/fornecedores');
+        this.carregando = false;
+        this.showSuccess('Fornecedor adicionado com sucesso!');
+        this.router.push('/fornecedores');
       }, 1000);
       console.log(this.form)
     },

@@ -10,13 +10,23 @@
           :editable="false"/>
       </div>
     </v-container>
-    <v-container class="pb-0 d-flex justify-end">
+    <v-container class="pb-0 d-flex justify-space-between">
+      <v-btn
+        class="ml-5"
+        color="primary"
+        prepend-icon="mdi-chevron-left"
+        size="x-large"
+        variant="outlined"
+        @click="prev"
+      >
+        Voltar
+      </v-btn>
       <v-btn
         :loading="loading"
         append-icon="mdi-check-circle"
         class="ml-5"
         color="success"
-        size="large"
+        size="x-large"
         type="submit"
         variant="elevated"
         @click="confirmar"
@@ -27,7 +37,7 @@
   </v-container>
 </template>
 <script>
-import {mapActions, mapState} from "pinia";
+import {mapActions, mapState, mapWritableState} from "pinia";
 import {useAlertStore} from "@/stores/alert";
 import {useVendasStore} from "@/stores/vendas";
 import TabelaProdutosVendas from "@/components/vendas/tabela-produtos.vue";
@@ -38,6 +48,7 @@ export default {
 
   computed: {
     ...mapState(useVendasStore, ['form']),
+    ...mapWritableState(useVendasStore, ['currentStep'])
   },
 
   data: () => ({
@@ -56,6 +67,10 @@ export default {
         this.showSuccess('Venda realizada com sucesso!');
         this.$router.push('/home');
       }, 1000);
+    },
+
+    prev() {
+      this.currentStep--;
     },
   }
 }

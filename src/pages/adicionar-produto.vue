@@ -12,7 +12,7 @@
           <v-btn
             color="primary"
             prepend-icon="mdi-chevron-left"
-            size="large"
+            size="x-large"
             variant="outlined"
             @click="voltar()"
           >
@@ -64,6 +64,7 @@
                         :rules="[required, price]"
                         color="primary"
                         label="Preço (R$)"
+                        placeholder="99.99"
                         prepend-inner-icon="mdi-currency-usd"
                         required
                         type="text"
@@ -151,7 +152,7 @@
                     class="ml-5"
                     color="primary"
                     prepend-icon="mdi-plus"
-                    size="large"
+                    size="x-large"
                     type="submit"
                     variant="elevated"
                   >

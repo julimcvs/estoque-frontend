@@ -44,7 +44,7 @@
           append-icon="mdi-chevron-right"
           class="ml-5"
           color="primary"
-          size="large"
+          size="x-large"
           type="submit"
           variant="elevated"
         >

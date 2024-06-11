@@ -17,7 +17,7 @@
           <v-btn
             color="primary"
             prepend-icon="mdi-chevron-left"
-            size="large"
+            size="x-large"
             variant="outlined"
             @click="voltar()"
           >
@@ -26,7 +26,7 @@
         </v-container>
         <v-container>
           <h1 class="text-primary text-center">
-            Movimentações de Estoque
+            Vendas
           </h1>
           <v-card
             class="card mt-5 rounded-xl"

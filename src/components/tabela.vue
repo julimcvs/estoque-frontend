@@ -18,79 +18,28 @@
             <v-btn
               v-if="hasAdicionar"
               color="primary"
-              size="large"
               prepend-icon="mdi-plus"
+              size="x-large"
               variant="elevated"
               @click="adicionar">
               Adicionar
             </v-btn>
           </div>
         </v-col>
-        <v-col cols="12" lg="6">
+        <v-col cols="12">
           <v-text-field
+            v-model="searchText"
             append-icon="mdi-magnify"
+            class="py-5"
             color="primary"
             hide-details="auto"
-            :label="`Pesquisar ${titulo.toLowerCase()}`"
-            v-model="searchText"
             variant="outlined">
+            <template v-slot:label>
+              <p>
+                Pesquisar {{ titulo.toLowerCase() }}
+              </p>
+            </template>
           </v-text-field>
-        </v-col>
-        <v-col cols="12" lg="3">
-          <v-menu>
-            <template v-slot:activator="{ props }">
-                <v-btn
-                  prepend-icon="mdi-filter"
-                  append-icon="mdi-chevron-down"
-                  aria-label="Clique para selecionar o campo para filtrar."
-                  class="py-1 w-100 h-100"
-                  hover
-                  rounded="lg"
-                  v-bind="props"
-                  variant="outlined">
-                  Filtrar por {{ campoFiltro.titulo }}
-                </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                v-for="(item, i) in headers"
-                :key="i"
-                @click="selecionarCampoFiltro(item)"
-              >
-                <v-list-item-title>
-                  {{ item.titulo }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" lg="3">
-          <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-btn
-                prepend-icon="mdi-sort"
-                append-icon="mdi-chevron-down"
-                aria-label="Clique para selecionar o campo para ordenar."
-                class="py-1 w-100 h-100"
-                hover
-                rounded="lg"
-                v-bind="props"
-                variant="outlined">
-                Ordenar por {{ campoOrdenacao.titulo }}
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                v-for="(item, i) in headers"
-                :key="i"
-                @click="selecionarCampoOrdenacao(item)"
-              >
-                <v-list-item-title>
-                  {{ item.titulo }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
         </v-col>
       </v-row>
     </v-card-title>
@@ -102,11 +51,11 @@
         <tr>
           <th
             v-for="header in headers"
-            class="text-left">
-            {{ header.titulo }}
+            class="header text-left">
+            <p>{{ header.titulo }}</p>
           </th>
-          <th>
-            Ações
+          <th class="text-center header">
+            <p>Ações</p>
           </th>
         </tr>
         </thead>
@@ -116,10 +65,11 @@
           :key="i"
         >
           <td
-            v-for="header in headers">
-            {{ item[header.campo] }}
+            v-for="header in headers"
+            class="field">
+            <p>{{ item[header.campo] }}</p>
           </td>
-          <td>
+          <td class="py-10 d-flex align-center justify-center">
             <div>
               <v-tooltip
                 :aria-labelledby="`tooltip-excluir-produto-${i}`"
@@ -127,30 +77,11 @@
               >
                 <template v-slot:activator="{ props }">
                   <v-btn
-                    :aria-label="`tooltip-excluir-produto-${i}`"
-                    color="red"
-                    :loading="loading[i]"
-                    icon="mdi-delete"
-                    v-bind="props"
-                    @click="excluir(i)"
-                  >
-                  </v-btn>
-                </template>
-                <span
-                  :id="`tooltip-excluir-produto-${i}`">
-                Excluir
-              </span>
-              </v-tooltip>
-              <v-tooltip
-                :aria-labelledby="`tooltip-excluir-produto-${i}`"
-                location="top"
-              >
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                    class="ml-5"
                     :aria-labelledby="`tooltip-editar-produto-${i}`"
                     color="primary"
-                    icon="mdi-pencil"
+                    prepend-icon="mdi-pencil"
+                    size="x-large"
+                    text="Editar"
                     v-bind="props"
                     @click="editar(i)"
                   >
@@ -159,6 +90,29 @@
                 <span
                   :id="`tooltip-editar-produto-${i}`">
                 Editar
+              </span>
+              </v-tooltip>
+              <v-tooltip
+                :aria-labelledby="`tooltip-excluir-produto-${i}`"
+                location="top"
+              >
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    :aria-label="`tooltip-excluir-produto-${i}`"
+                    :loading="loading[i]"
+                    class="ml-5"
+                    color="red"
+                    prepend-icon="mdi-delete"
+                    size="x-large"
+                    text="Excluir"
+                    v-bind="props"
+                    @click="excluir(i)"
+                  >
+                  </v-btn>
+                </template>
+                <span
+                  :id="`tooltip-excluir-produto-${i}`">
+                Excluir
               </span>
               </v-tooltip>
             </div>
@@ -172,18 +126,17 @@
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-label for="botao-quantidade-itens">
-              Itens por página:
+              <p>Itens por página:</p>
               <v-card
                 id="botao-quantidade-itens"
-                role="button"
                 aria-label="Clique para alterar a quantidade de itens por página."
                 class="px-2 py-1 ml-5"
                 hover
+                role="button"
                 rounded="lg"
                 v-bind="props"
                 variant="outlined">
-                {{ itensPorPagina }}
-                <v-icon class="ml-1">mdi-chevron-down</v-icon>
+                <p>{{ itensPorPagina }}</p>
               </v-card>
             </v-label>
           </template>
@@ -194,18 +147,19 @@
               @click="selecionarItensPorPagina(item)"
             >
               <v-list-item-title>
-                {{ item }}
+                <p>{{ item }}</p>
               </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
         <div>
           <v-label>
-            Página {{ paginaAtual }} de {{ totalPaginas }}
+            <p>Página {{ paginaAtual }} de {{ totalPaginas }}</p>
             <v-pagination
               :length="5"
               :total-visible="5"
-              rounded></v-pagination>
+              rounded>
+            </v-pagination>
           </v-label>
         </div>
       </div>
@@ -331,9 +285,5 @@ export default {
 
 span, th, td {
   font-size: 18px;
-}
-
-.title {
-  font-size: 24px;
 }
 </style>

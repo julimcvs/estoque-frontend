@@ -12,7 +12,7 @@
           <v-btn
             color="primary"
             prepend-icon="mdi-chevron-left"
-            size="large"
+            size="x-large"
             variant="outlined"
             @click="voltar()"
           >

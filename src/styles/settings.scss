@@ -1,18 +1,32 @@
-/**
- * src/styles/settings.scss
- *
- * Configures SASS variables and Vuetify overwrites
- */
+.v-breadcrumbs-item {
+  font-size: 20px;
+}
 
-// https://vuetifyjs.com/features/sass-variables/`
-// @use 'vuetify/settings' with (
-//   $color-pack: false
-// );
+.v-btn--icon.v-btn--density-default {
+  width: calc(var(--v-btn-height) + 24px);
+  height: calc(var(--v-btn-height) + 24px);
+}
+
+.v-field__input {
+  height: 75px;
+  font-size: 25px;
+}
+
+.v-alert__content .v-alert__prepend {
+  font-size: 25px !important;
+}
 
 .v-label {
   opacity: 1;
+  font-size: 25px;
+}
+
+.v-messages__message {
+  font-size: 16px;
 }
 
 .v-breadcrumbs-item--disabled {
   opacity: 1;
+  color: rgb(var(--v-theme-primary)) !important;
+  text-decoration: underline;
 }

@@ -24,9 +24,9 @@
       </div>
       <div class="d-flex align-center">
         <v-progress-linear
-          aria-label="Progresso do stepper"
           v-if="index !== steps.length - 1"
           :color="currentStep > index ? 'secondary' : 'white'"
+          aria-label="Progresso do stepper"
           model-value="100"
           style="width: 10vw"/>
       </div>

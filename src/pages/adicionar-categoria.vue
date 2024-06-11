@@ -12,7 +12,7 @@
           <v-btn
             color="primary"
             prepend-icon="mdi-chevron-left"
-            size="large"
+            size="x-large"
             variant="outlined"
             @click="voltar()"
           >
@@ -45,8 +45,8 @@
                             mdi-information
                           </v-icon>
                           <v-tooltip
-                            aria-labelledby="tooltip"
                             activator="parent"
+                            aria-labelledby="tooltip"
                             location="bottom"
                           >
                             <p id="tooltip">
@@ -56,12 +56,14 @@
                         </template>
                       </v-text-field>
                     </v-col>
-                    <v-col cols="12" md="3" sm="6">
+                    <v-col
+                      class="mt-2"
+                      cols="12" md="3" sm="6">
                       <v-btn
                         class="ml-5"
                         color="primary"
                         prepend-icon="mdi-plus"
-                        size="large"
+                        size="x-large"
                         type="submit"
                         variant="elevated"
                       >
@@ -79,14 +81,15 @@
   </v-layout>
   <v-dialog
     v-model="dialogConfirmacao"
-    width="700">
+    fullscreen
+    transition="slide-x-transition">
     <v-card
-      class="container mt-5 pa-5"
+      class="container pa-5"
       elevation="5"
       variant="elevated">
       <v-card-title>
         <v-container class="titulo-pagina-confirmacao text-wrap text-primary">
-          Página de Confirmação - Adicionar Categoria
+          <h2>Página de Confirmação - Adicionar Categoria</h2>
           <v-divider class="d-block mt-5"></v-divider>
         </v-container>
       </v-card-title>
@@ -107,9 +110,9 @@
             class="ml-5"
             color="primary"
             prepend-icon="mdi-plus"
-            size="large"
+            size="x-large"
             variant="elevated"
-            width="200"
+            width="250"
             @click="confirmar()"
           >
             Confirmar
@@ -118,9 +121,9 @@
             class="ml-5 mt-5"
             color="primary"
             prepend-icon="mdi-pencil"
-            size="large"
+            size="x-large"
             variant="outlined"
-            width="200"
+            width="250"
             @click="dialogConfirmacao = false"
           >
             Editar

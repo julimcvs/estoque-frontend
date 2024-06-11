@@ -35,9 +35,9 @@
                   class="d-flex justify-center"
                   cols="12">
                   <div>
-                    <p class="color-secondary font-weight-medium">
+                    <h2 class="color-secondary font-weight-medium">
                       {{ movimentacao.title }}
-                    </p>
+                    </h2>
                   </div>
                 </v-col>
               </v-row>
@@ -50,7 +50,7 @@
           append-icon="mdi-chevron-right"
           class="ml-5"
           color="primary"
-          size="large"
+          size="x-large"
           type="submit"
         >
           Próximo

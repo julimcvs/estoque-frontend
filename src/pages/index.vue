@@ -1,7 +1,9 @@
 <template>
-    <v-app>
-    <v-toolbar color="primary">
-      <v-app-bar-title>Elder - Gestão de Estoque</v-app-bar-title>
+  <v-app>
+    <v-toolbar
+      color="primary"
+      height="100">
+      <v-app-bar-title style="font-size: 30px">Elder - Gestão de Estoque</v-app-bar-title>
     </v-toolbar>
     <Alert></Alert>
     <router-view></router-view>

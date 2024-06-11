@@ -6,36 +6,46 @@
         class="table-header text-primary">
       <tr>
         <th>
-          ID
+          <p>
+            ID
+          </p>
         </th>
         <th>
-          Descrição
+          <p>
+            Descrição
+          </p>
         </th>
         <th>
-          Fornecedor
+          <p>
+            Fornecedor
+          </p>
         </th>
         <th>
-          Preço
+          <p>
+            Preço
+          </p>
         </th>
         <th>
-          Quantidade
-          <v-tooltip
-            aria-labelledby="tooltip-quantidade"
-            location="top"
-          >
-            <p id="tooltip-quantidade">
-              Informe a quantidade dos produtos que serão movimentados.
-            </p>
-            <template v-slot:activator="{ props }">
-              <v-icon
-                class="pb-1"
-                color="grey"
-                v-bind="props"
-              >
-                mdi-information
-              </v-icon>
-            </template>
-          </v-tooltip>
+          <p>
+            Quantidade
+            <v-tooltip
+              aria-labelledby="tooltip-quantidade"
+              location="top"
+            >
+              <p id="tooltip-quantidade">
+                Informe a quantidade dos produtos que serão movimentados.
+              </p>
+              <template v-slot:activator="{ props }">
+                <v-icon
+                  class="pb-1"
+                  color="grey"
+                  v-bind="props"
+                >
+                  mdi-information
+                </v-icon>
+              </template>
+            </v-tooltip>
+          </p>
         </th>
         <th
           v-if="editable"
@@ -50,16 +60,16 @@
         :key="i"
       >
         <td>
-          {{ produto.id }}
+          <p>{{ produto.id }}</p>
         </td>
         <td>
-          {{ produto.description }}
+          <p>{{ produto.description }}</p>
         </td>
         <td>
-          {{ produto.supplier }}
+          <p>{{ produto.supplier }}</p>
         </td>
         <td>
-          {{ getPreco(produto.price) }}
+          <p>{{ getPreco(produto.price) }}</p>
         </td>
         <td>
           <v-text-field
@@ -67,6 +77,7 @@
             v-model="produto.amount"
             :rules="[required, minLength, positive]"
             class="my-2"
+            hide-details="auto"
             label="Quantidade"
             placeholder="Quantidade..."
             type="number"
@@ -78,24 +89,17 @@
         </td>
         <td v-if="editable">
           <div class="d-flex justify-center">
-            <v-tooltip
-              :aria-labelledby="`tooltip-deletar-${i}`"
-              location="top"
+            <v-btn
+              aria-label="Excluir Produto"
+              color="red"
+              prepend-icon="mdi-delete"
+              size="x-large"
+              @click="deletarProduto(i)"
             >
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  aria-label="Excluir Produto"
-                  color="red"
-                  icon="mdi-delete"
-                  v-bind="props"
-                  @click="deletarProduto(i)"
-                >
-                </v-btn>
-              </template>
-              <span :id="`tooltip-deletar-${i}`">
-                Excluir Produto
-              </span>
-            </v-tooltip>
+              <p>
+                Excluir
+              </p>
+            </v-btn>
           </div>
         </td>
       </tr>

@@ -28,8 +28,8 @@
               mdi-information
             </v-icon>
             <v-tooltip
-              aria-labelledby="tooltip-produtos"
               activator="parent"
+              aria-labelledby="tooltip-produtos"
               location="bottom"
             >
               <p id="tooltip-produtos">
@@ -46,7 +46,7 @@
           class="ml-5"
           color="primary"
           prepend-icon="mdi-chevron-left"
-          size="large"
+          size="x-large"
           variant="outlined"
           @click="prev"
         >
@@ -56,7 +56,7 @@
           append-icon="mdi-chevron-right"
           class="ml-5"
           color="primary"
-          size="large"
+          size="x-large"
           type="submit"
           variant="elevated"
         >

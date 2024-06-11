@@ -17,7 +17,7 @@
           <v-btn
             color="primary"
             prepend-icon="mdi-chevron-left"
-            size="large"
+            size="x-large"
             variant="outlined"
             @click="voltar()"
           >
@@ -26,7 +26,7 @@
         </v-container>
         <v-container>
           <h1 class="text-primary text-center">
-            Movimentações de Estoque
+            Relatório de Vendas
           </h1>
           <v-card class="mt-5">
             <v-card-title>
@@ -34,29 +34,29 @@
                 <v-row class="mt-2">
                   <v-col cols="12" md="5">
                     <v-date-input
-                      role="combobox"
                       v-model="form.dataInicial"
                       aria-label="Data inicial"
                       color="primary"
                       label="Data inicial"
+                      role="combobox"
                       title="Data inicial"
                       variant="outlined">
                     </v-date-input>
                   </v-col>
                   <v-col cols="12" md="5">
                     <v-date-input
-                      role="combobox"
                       v-model="form.dataFinal"
                       aria-label="Data final"
                       color="primary"
                       label="Data final"
+                      role="combobox"
                       title="Data final"
                       variant="outlined">
                     </v-date-input>
                   </v-col>
                   <v-col cols="12" md="2">
                     <v-btn
-                      class="w-100"
+                      class="w-100 mt-2"
                       color="primary"
                       prepend-icon="mdi-magnify"
                       size="x-large"

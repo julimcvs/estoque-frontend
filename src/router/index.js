@@ -84,12 +84,10 @@ const routes = [
             [
               {
                 title: 'Página Inicial',
-                disabled: false,
                 href: '/',
               },
               {
                 title: 'Categorias',
-                disabled: true,
                 href: 'categorias',
               }
             ]

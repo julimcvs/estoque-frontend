@@ -13,7 +13,7 @@
             class="mb-5"
             color="primary"
             prepend-icon="mdi-chevron-left"
-            size="large"
+            size="x-large"
             variant="outlined"
             @click="voltar()"
           >
@@ -23,9 +23,9 @@
                   :items="items"
                   :pagina-atual="1"
                   :total-paginas="5"
-                  @excluir="excluir($event)"
                   has-adicionar
-                  titulo="Produtos"/>
+                  titulo="Produtos"
+                  @excluir="excluir($event)"/>
         </v-container>
       </v-container>
     </v-main>

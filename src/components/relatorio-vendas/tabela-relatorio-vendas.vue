@@ -5,70 +5,80 @@
     variant="elevated">
     <v-card-title class="d-flex justify-space-between">
       <div>
-      <p class="text-success">
-        Faturamento total: R${{ faturamentoTotal.toFixed(2) }}
-      </p>
+        <p class="text-success">
+          Faturamento total: R${{ faturamentoTotal.toFixed(2) }}
+        </p>
       </div>
-      <v-tooltip
+      <v-btn
         aria-labelledby="tooltip-exportar-relatorio"
-        location="top"
-      >
-        <template v-slot:activator="{ props }">
-          <v-btn
-            aria-labelledby="tooltip-exportar-relatorio"
-            v-bind="props"
-            color="red"
-            size="large"
-            variant="elevated"
-            icon="mdi-file-document"
-            @click="exportarRelatorio">
-            <v-img
-              alt="Exportar PDF"
-              src="/pdf.png"
-              width="30"
-              height="30"/>
-          </v-btn>
+        color="red"
+        size="x-large"
+        variant="elevated"
+        @click="exportarRelatorio">
+        <template v-slot:prepend>
+          <v-img
+            alt="Exportar PDF"
+            height="30"
+            src="/pdf.png"
+            width="30"/>
         </template>
-        <span id="tooltip-exportar-relatorio">
+
+        <p>
           Exportar PDF
-        </span>
-      </v-tooltip>
+        </p>
+      </v-btn>
     </v-card-title>
     <v-card-text>
       <v-table
-        class="table">
+        class="table mt-10">
         <thead
           class="table-header text-primary">
         <tr>
           <th class="text-left">
-            ID
+            <p>
+              ID
+            </p>
           </th>
           <th>
-            Data
+            <p>
+              Data
+            </p>
           </th>
           <th>
-            Número de Itens
+            <p>
+              Número de Itens
+            </p>
           </th>
           <th>
-            Valor Total
+            <p>
+              Valor Total
+            </p>
           </th>
         </tr>
         </thead>
         <tbody>
         <tr
-          :key="venda.id"
-          v-for="venda in vendas">
+          v-for="venda in vendas"
+          :key="venda.id">
           <td>
-            {{ venda.id }}
+            <p>
+              {{ venda.id }}
+            </p>
           </td>
           <td>
-            {{ venda.creationDate }}
+            <p>
+              {{ venda.creationDate }}
+            </p>
           </td>
           <td>
-            {{ venda.products.length }}
+            <p>
+              {{ venda.products.length }}
+            </p>
           </td>
           <td>
-            R${{ venda.totalValue.toFixed(2) }}
+            <p>
+              R${{ venda.totalValue.toFixed(2) }}
+            </p>
           </td>
         </tr>
         </tbody>
@@ -81,16 +91,17 @@
             <v-label>
               Itens por página:
               <v-card
-                role="button"
                 aria-label="Clique para alterar a quantidade de itens por página."
                 class="px-2 py-1 ml-5"
                 hover
+                role="button"
                 rounded="lg"
                 v-bind="props"
                 variant="outlined">
                 {{ itensPorPagina }}
                 <v-icon
-                  class="ml-1">mdi-chevron-down</v-icon>
+                  class="ml-1">mdi-chevron-down
+                </v-icon>
               </v-card>
             </v-label>
           </template>
@@ -120,13 +131,12 @@
   </v-card>
 </template>
 <script>
-import { mapState } from 'pinia';
+import {mapState} from 'pinia';
 import {useRelatorioVendasStore} from "@/stores/relatorio-vendas";
+
 export default {
   data: () => (
-    {
-
-    }
+    {}
   ),
   computed: {
     ...mapState(useRelatorioVendasStore, ['vendas', 'itensPorPagina', 'totalPaginas', 'paginaAtual']),
@@ -137,9 +147,7 @@ export default {
   },
   created() {
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 <style scoped>

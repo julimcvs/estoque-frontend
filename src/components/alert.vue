@@ -5,7 +5,7 @@
       :text="alert.message"
       :title="alert.title"
       :type="alert.type"
-      class="alert pa-7"
+      class="alert pt-7 pb-10"
       closable
       close-label="Fechar alerta"
     >
@@ -30,7 +30,7 @@ export default {
   },
 
   watch: {
-    '$route'(rota1 , rota2) {
+    '$route'(rota1, rota2) {
       if (rota1.path !== '/home' && !rota2.path.includes(rota1.path)) {
         this.alert.show = false;
       }
