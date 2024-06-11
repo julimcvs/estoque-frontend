@@ -19,8 +19,17 @@
           >
             Voltar
           </v-btn>
-          <Tabela :headers="headers" :items="items" :pagina-atual="1" :total-paginas="5" has-adicionar
-                  titulo="Fornecedores"/>
+          <Tabela
+            @excluir="excluir"
+            @selecionar-itens-por-pagina="selecionarItensPorPagina"
+            :carregando="carregando"
+            :headers="headers"
+            :items="fornecedores"
+            :pagina-atual="paginaAtual"
+            :total-paginas="quantidadePaginas"
+            :itens-por-pagina="itensPorPagina"
+            has-adicionar
+            titulo="Fornecedores"/>
         </v-container>
       </v-container>
     </v-main>
@@ -30,6 +39,9 @@
 import Breadcrumbs from "@/components/breadcrumbs.vue";
 import Tabela from "@/components/tabela.vue";
 import {useRoute, useRouter} from "vue-router";
+import {mapActions} from "pinia";
+import {useAlertStore} from "@/stores/alert";
+import {useFornecedoresStore} from "@/stores/fornecedores";
 
 export default {
   components: {Tabela, Breadcrumbs},
@@ -37,11 +49,8 @@ export default {
     {
       title: 'Gestão de Estoque',
       searchText: '',
+      carregando: false,
       headers: [
-        {
-          titulo: 'ID',
-          campo: 'id'
-        },
         {
           titulo: 'Nome',
           campo: 'name'
@@ -51,24 +60,24 @@ export default {
           campo: 'contact'
         },
       ],
-      items: [
+      fornecedores: [
         {
-          id: 1,
+          id: 999,
           name: 'Atlas',
           contact: '(32) 3343-4397'
         },
         {
-          id: 2,
+          id: 998,
           name: 'Suvinil',
           contact: '(38) 2872-6102'
         },
         {
-          id: 3,
+          id: 997,
           name: 'Coral',
           contact: '(11) 3343-4397'
         },
         {
-          id: 4,
+          id: 996,
           name: 'Sherwin Williams',
           contact: '(32) 3343-4397'
         },
@@ -78,6 +87,9 @@ export default {
           contact: '(32) 3343-4397'
         },
       ],
+      itensPorPagina: 10,
+      paginaAtual: 1,
+      quantidadePaginas: 5,
     }
   ),
   computed: {
@@ -86,7 +98,39 @@ export default {
     }
   },
 
+  async created() {
+    await this.buscarFornecedores();
+  },
+
   methods: {
+    ...mapActions(useAlertStore, ['showSuccess', 'showError']),
+    ...mapActions(useFornecedoresStore, ['buscarFornecedoresPaginado', 'excluirFornecedor']),
+
+    async buscarFornecedores() {
+      this.carregando = true;
+      try {
+        const data = await this.buscarFornecedoresPaginado(this.paginaAtual, this.itensPorPagina);
+        this.fornecedores = data.content;
+        this.quantidadePaginas = Math.ceil(Number(data.totalElements) / data.pageSize);
+      } finally {
+        this.carregando = false;
+      }
+    },
+
+    async excluir(fornecedor) {
+      try {
+        await this.excluirFornecedor(fornecedor.id);
+        this.fornecedores.splice(this.fornecedores.indexOf(fornecedor), 1);
+      } catch (e) {
+        this.showError(`Erro ao excluir fornecedor: ${e.message}`);
+      }
+    },
+
+    async selecionarItensPorPagina(item) {
+      this.itensPorPagina = item;
+      await this.buscarFornecedores();
+    },
+
     voltar() {
       this.router.push('/home');
     }

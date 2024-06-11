@@ -44,7 +44,20 @@
       </v-row>
     </v-card-title>
     <v-card-text>
+      <div
+        v-if="carregando"
+      >
+      <v-progress-linear
+        color="primary"
+        indeterminate>
+      </v-progress-linear>
+        <v-skeleton-loader
+          class="mt-5"
+          type="table-tbody">
+        </v-skeleton-loader>
+      </div>
       <v-table
+        v-else
         class="table">
         <thead
           class="table-header text-primary">
@@ -61,6 +74,15 @@
         </thead>
         <tbody>
         <tr
+          v-if="filteredItems.length === 0">
+          <td
+            :colspan="headers.length + 1"
+            class="text-center py-10">
+            <p>Nenhum item encontrado.</p>
+          </td>
+        </tr>
+        <tr
+          v-else
           v-for="(item, i) in filteredItems"
           :key="i"
         >
@@ -71,50 +93,28 @@
           </td>
           <td class="py-10 d-flex align-center justify-center">
             <div>
-              <v-tooltip
-                :aria-labelledby="`tooltip-excluir-produto-${i}`"
-                location="top"
+              <v-btn
+                :aria-labelledby="`tooltip-editar-produto-${i}`"
+                color="primary"
+                prepend-icon="mdi-pencil"
+                size="x-large"
+                text="Editar"
+                v-bind="props"
+                @click="editar(i)"
               >
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                    :aria-labelledby="`tooltip-editar-produto-${i}`"
-                    color="primary"
-                    prepend-icon="mdi-pencil"
-                    size="x-large"
-                    text="Editar"
-                    v-bind="props"
-                    @click="editar(i)"
-                  >
-                  </v-btn>
-                </template>
-                <span
-                  :id="`tooltip-editar-produto-${i}`">
-                Editar
-              </span>
-              </v-tooltip>
-              <v-tooltip
-                :aria-labelledby="`tooltip-excluir-produto-${i}`"
-                location="top"
+              </v-btn>
+              <v-btn
+                :aria-label="`tooltip-excluir-produto-${i}`"
+                :loading="loading[i]"
+                class="ml-5"
+                color="red"
+                prepend-icon="mdi-delete"
+                size="x-large"
+                text="Excluir"
+                v-bind="props"
+                @click="excluir(i)"
               >
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                    :aria-label="`tooltip-excluir-produto-${i}`"
-                    :loading="loading[i]"
-                    class="ml-5"
-                    color="red"
-                    prepend-icon="mdi-delete"
-                    size="x-large"
-                    text="Excluir"
-                    v-bind="props"
-                    @click="excluir(i)"
-                  >
-                  </v-btn>
-                </template>
-                <span
-                  :id="`tooltip-excluir-produto-${i}`">
-                Excluir
-              </span>
-              </v-tooltip>
+              </v-btn>
             </div>
           </td>
         </tr>
@@ -156,7 +156,7 @@
           <v-label>
             <p>Página {{ paginaAtual }} de {{ totalPaginas }}</p>
             <v-pagination
-              :length="5"
+              :length="totalPaginas"
               :total-visible="5"
               rounded>
             </v-pagination>
@@ -171,6 +171,7 @@ import {mapActions} from "pinia";
 import {useAlertStore} from "@/stores/alert";
 
 export default {
+  emits: ['excluir', 'selecionar-itens-por-pagina'],
   props: {
     hasAdicionar: {
       type: Boolean,
@@ -193,14 +194,22 @@ export default {
       type: String,
       required: true
     },
+    itensPorPagina: {
+      type: Number,
+      required: true
+    },
     totalPaginas: {
       type: Number,
       required: true
+    },
+    carregando: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data: () => (
     {
-      itensPorPagina: null,
       campoFiltro: null,
       campoOrdenacao: null,
       menuPaginacao: [10, 15, 20],
@@ -231,7 +240,6 @@ export default {
   created() {
     this.campoFiltro = this.headers[1];
     this.campoOrdenacao = this.headers[1];
-    this.itensPorPagina = this.menuPaginacao[0];
     this.items.forEach(() => {
       this.loading.push(false);
     });
@@ -251,21 +259,11 @@ export default {
     },
 
     async excluir(i) {
-      const path = this.$route.path;
-      this.loading[i] = true;
-      try {
         this.$emit('excluir', this.items[i]);
-        // await axios.delete(`/api${path}/${this.items[i].id}`)
-      } catch (e) {
-        this.showError("Erro ao excluir");
-      } finally {
-        this.loading[i] = false;
-        this.showSuccess("Excluído com sucesso");
-      }
     },
 
     selecionarItensPorPagina(item) {
-      this.itensPorPagina = item;
+      this.$emit('selecionar-itens-por-pagina', item);
     },
 
     selecionarCampoFiltro(filtro) {

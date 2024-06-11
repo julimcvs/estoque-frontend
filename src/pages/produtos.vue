@@ -19,13 +19,17 @@
           >
             Voltar
           </v-btn>
-          <Tabela :headers="headers"
-                  :items="items"
-                  :pagina-atual="1"
-                  :total-paginas="5"
-                  has-adicionar
-                  titulo="Produtos"
-                  @excluir="excluir($event)"/>
+          <Tabela
+            :headers="headers"
+            :items="produtos"
+            :pagina-atual="paginaAtual"
+            :total-paginas="quantidadePaginas"
+            :itensPorPagina="itensPorPagina"
+            :carregando="carregando"
+            @selecionar-itens-por-pagina="selecionarItensPorPagina"
+            has-adicionar
+            titulo="Produtos"
+            @excluir="excluir"/>
         </v-container>
       </v-container>
     </v-main>
@@ -35,18 +39,18 @@
 import Breadcrumbs from "@/components/breadcrumbs.vue";
 import Tabela from "@/components/tabela.vue";
 import {useRoute, useRouter} from "vue-router";
+import {useProdutosStore} from "@/stores/produtos";
+import {mapActions} from "pinia";
+import {useAlertStore} from "@/stores/alert";
 
 export default {
   components: {Tabela, Breadcrumbs},
   data: () => (
     {
       title: 'Gestão de Estoque',
+      carregando: true,
       searchText: '',
       headers: [
-        {
-          titulo: 'ID',
-          campo: 'id'
-        },
         {
           titulo: 'Descrição',
           campo: 'description'
@@ -57,85 +61,17 @@ export default {
         },
         {
           titulo: 'Categoria',
-          campo: 'category'
+          campo: 'categoryDescription'
         },
         {
-          titulo: 'Estoque',
-          campo: 'stock'
+          titulo: 'Fornecedor',
+          campo: 'supplierName'
         }
       ],
-      items: [
-        {
-          id: 1,
-          description: 'Coca-Cola',
-          price: 5.00,
-          category: 'Refrigerante',
-          stock: 'Estoque 1'
-        },
-        {
-          id: 2,
-          description: 'Pepsi',
-          price: 4.50,
-          category: 'Refrigerante',
-          stock: 'Estoque 5'
-        },
-        {
-          id: 3,
-          description: 'Fanta',
-          price: 4.00,
-          category: 'Refrigerante',
-          stock: 'Estoque 1'
-        },
-        {
-          id: 4,
-          description: 'Sprite',
-          price: 3.50,
-          category: 'Refrigerante',
-          stock: 'Estoque 2'
-        },
-        {
-          id: 5,
-          description: 'Guaraná',
-          price: 3.00,
-          category: 'Refrigerante',
-          stock: 'Estoque 1'
-        },
-        {
-          id: 6,
-          description: 'Água',
-          price: 2.50,
-          category: 'Líquido',
-          stock: 'Estoque 3'
-        },
-        {
-          id: 7,
-          description: 'Suco',
-          price: 2.00,
-          category: 'Líquido',
-          stock: 'Estoque 3'
-        },
-        {
-          id: 8,
-          description: 'Guarapan',
-          price: 1.50,
-          category: 'Refrigerante',
-          stock: 'Estoque 1'
-        },
-        {
-          id: 9,
-          description: 'Cerveja',
-          price: 1.00,
-          category: 'Bebida Alcoólica',
-          stock: 'Estoque 2'
-        },
-        {
-          id: 10,
-          description: 'Vinho',
-          price: 0.50,
-          category: 'Bebida Alcoólica',
-          stock: 'Estoque 1'
-        }
-      ],
+      produtos: [],
+      itensPorPagina: 10,
+      paginaAtual: 1,
+      quantidadePaginas: 5,
     }
   ),
   computed: {
@@ -144,9 +80,32 @@ export default {
     }
   },
 
+  async created() {
+    await this.buscarProdutos();
+  },
+
   methods: {
-    excluir(produto) {
-      this.items.splice(this.items.indexOf(produto), 1);
+    ...mapActions(useAlertStore, ['showError']),
+    ...mapActions(useProdutosStore, ['buscarProdutosPaginado', 'excluirProduto']),
+
+    async buscarProdutos() {
+      this.carregando = true;
+      try {
+        const data = await this.buscarProdutosPaginado(this.paginaAtual, this.itensPorPagina);
+        this.produtos = data.content;
+        this.quantidadePaginas = Math.ceil(Number(data.totalElements) / data.pageSize);
+      } finally {
+        this.carregando = false;
+      }
+    },
+
+    async excluir(produto) {
+      try {
+        await this.excluirProduto(produto.id);
+        this.produtos.splice(this.produtos.indexOf(produto), 1);
+      } catch (e) {
+        this.showError(`Erro ao excluir produto: ${e.message}`);
+      }
     },
 
     voltar() {

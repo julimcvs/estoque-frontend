@@ -172,6 +172,7 @@ import Breadcrumbs from "@/components/breadcrumbs.vue";
 import {mapActions} from "pinia";
 import {useAlertStore} from "@/stores/alert";
 import {useRoute, useRouter} from "vue-router";
+import {useFornecedoresStore} from "@/stores/fornecedores";
 
 export default {
   components: {Breadcrumbs},
@@ -194,22 +195,37 @@ export default {
     },
   },
 
+  created() {
+    const query = this.route.query;
+    if (query?.id) {
+      this.isEdicao = true;
+      this.buscarFornecedorPorId(query.id);
+    }
+  },
+
   methods: {
     ...mapActions(useAlertStore, ['showSuccess', 'showError']),
+    ...mapActions(useFornecedoresStore, ['adicionarFornecedor', 'buscarFornecedorPorId']),
 
     adicionarFornecedor() {
       this.dialogConfirmacao = true;
     },
 
-    confirmar() {
-      // Submeter formulário
+    async buscarFornecedorPorId(id) {
+      this.form = await this.buscarFornecedorPorId(id);
+    },
+
+    async confirmar() {
       this.carregando = true;
-      setTimeout(() => {
-        this.carregando = false;
-        this.showSuccess('Fornecedor adicionado com sucesso!');
+      try {
+        await this.adicionarFornecedor(this.form);
+        this.showSuccess(this.isEdicao ? 'Fornecedor editado com sucesso' : 'Fornecedor adicionado com sucesso!');
         this.router.push('/fornecedores');
-      }, 1000);
-      console.log(this.form)
+      } catch (e) {
+        this.showError(`Erro ao adicionar fornecedor: ${e.message}`);
+      } finally {
+        this.carregando = false;
+      }
     },
 
     required(value) {

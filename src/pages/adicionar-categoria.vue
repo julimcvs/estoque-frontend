@@ -1,5 +1,5 @@
 <template>
-  <title>Adicionar Categoria - Elder</title>
+  <title>{{isEdicao ? 'Editar Categoria' : 'Adicionar Categoria'}} - Elder</title>
   <v-layout class="flex-column">
     <v-main>
       <Breadcrumbs :items="breadcrumbs"/>
@@ -22,10 +22,10 @@
             class="container mt-5 pa-5"
             elevation="5"
             variant="elevated">
-            <v-form fast-fail @submit.prevent="adicionarProduto">
+            <v-form fast-fail @submit.prevent="adicionar">
               <v-card-title>
                 <v-container>
-                  <h1>Adicionar Categoria</h1>
+                  <h1>{{isEdicao ? 'Editar Categoria' : 'Adicionar Categoria'}}</h1>
                 </v-container>
               </v-card-title>
               <v-card-text>
@@ -62,12 +62,12 @@
                       <v-btn
                         class="ml-5"
                         color="primary"
-                        prepend-icon="mdi-plus"
+                        :prepend-icon="isEdicao ? 'mdi-check' : 'mdi-plus'"
                         size="x-large"
                         type="submit"
                         variant="elevated"
                       >
-                        Adicionar
+                        {{isEdicao ? 'Confirmar' : 'Adicionar'}}
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -89,7 +89,7 @@
       variant="elevated">
       <v-card-title>
         <v-container class="titulo-pagina-confirmacao text-wrap text-primary">
-          <h2>Página de Confirmação - Adicionar Categoria</h2>
+          <h2>Página de Confirmação - {{isEdicao ? 'Editar Categoria' : 'Adicionar Categoria'}}</h2>
           <v-divider class="d-block mt-5"></v-divider>
         </v-container>
       </v-card-title>
@@ -109,7 +109,7 @@
             :loading="carregando"
             class="ml-5"
             color="primary"
-            prepend-icon="mdi-plus"
+            prepend-icon="mdi-check"
             size="x-large"
             variant="elevated"
             width="250"
@@ -138,6 +138,7 @@ import Breadcrumbs from "@/components/breadcrumbs.vue";
 import {mapActions} from "pinia";
 import {useAlertStore} from "@/stores/alert";
 import {useRoute, useRouter} from "vue-router";
+import {useCategoriasStore} from "@/stores/categorias";
 
 export default {
   components: {Breadcrumbs},
@@ -146,8 +147,10 @@ export default {
       carregando: false,
       dialogConfirmacao: false,
       form: {
+        id: null,
         description: '',
-      }
+      },
+      isEdicao: false,
     }
   ),
   computed: {
@@ -159,27 +162,43 @@ export default {
     },
   },
 
+  created() {
+    const query = this.route.query;
+    if (query?.id) {
+      this.isEdicao = true;
+      this.buscarPorId(query.id);
+    }
+  },
+
   methods: {
     ...mapActions(useAlertStore, ['showSuccess', 'showError']),
+    ...mapActions(useCategoriasStore, ['adicionarCategoria', 'buscarCategoriaPorId']),
 
-    adicionarProduto() {
+    adicionar() {
       this.dialogConfirmacao = true;
     },
 
-    confirmar() {
-      // Submeter formulário
+    async buscarPorId(id) {
+      this.form = await this.buscarCategoriaPorId(id);
+    },
+
+    async confirmar() {
       this.carregando = true;
-      setTimeout(() => {
-        this.carregando = false;
-        this.showSuccess('Categoria adicionada com sucesso!');
+      try {
+        await this.adicionarCategoria(this.form);
+        this.showSuccess(this.isEdicao ? 'Categoria editada com sucesso' : 'Categoria adicionada com sucesso!');
         this.router.push('/categorias');
-      }, 1000);
-      console.log(this.form)
+      } catch (e) {
+        this.showError(`Erro ao adicionar categoria: ${e.message}`);
+      } finally {
+        this.carregando = false;
+      }
     },
 
     required(value) {
       return !!value || 'Campo obrigatório';
     },
+
     maxLength(value) {
       return value.length <= 500 || 'Máximo de 500 caracteres';
     },

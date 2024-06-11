@@ -22,7 +22,7 @@
             class="container mt-5 pa-5"
             elevation="5"
             variant="elevated">
-            <v-form fast-fail @submit.prevent="adicionarProduto">
+            <v-form fast-fail @submit.prevent="adicionar">
               <v-card-title>
                 <v-container>
                   <h1 class="text-primary">
@@ -237,6 +237,9 @@ import Breadcrumbs from "@/components/breadcrumbs.vue";
 import {mapActions} from "pinia";
 import {useAlertStore} from "@/stores/alert";
 import {useRoute, useRouter} from "vue-router";
+import {useCategoriasStore} from "@/stores/categorias";
+import {useProdutosStore} from "@/stores/produtos";
+import {useFornecedoresStore} from "@/stores/fornecedores";
 
 export default {
   components: {Breadcrumbs},
@@ -289,22 +292,49 @@ export default {
     },
   },
 
+  async created() {
+    const query = this.route.query;
+    if (query?.id) {
+      this.isEdicao = true;
+      await this.buscarPorId(query.id);
+    }
+    await this.buscarCategorias();
+    await this.buscarFornecedores();
+  },
+
   methods: {
     ...mapActions(useAlertStore, ['showSuccess', 'showError']),
+    ...mapActions(useProdutosStore, ['adicionarProduto', 'buscarProdutoPorId']),
+    ...mapActions(useCategoriasStore, ['buscarTodasCategorias']),
+    ...mapActions(useFornecedoresStore, ['buscarTodosFornecedores']),
 
-    adicionarProduto() {
+    adicionar() {
       this.dialogConfirmacao = true;
     },
 
-    confirmar() {
-      // Submeter formulário
+    async buscarPorId(id) {
+      this.form = await this.buscarProdutoPorId(id);
+    },
+
+    async buscarCategorias() {
+      this.categorias = await this.buscarTodasCategorias();
+    },
+
+    async buscarFornecedores() {
+      this.fornecedores = await this.buscarTodosFornecedores();
+    },
+
+    async confirmar() {
       this.carregando = true;
-      setTimeout(() => {
-        this.carregando = false;
-        this.showSuccess('Produto adicionado com sucesso!');
+      try {
+        await this.adicionarProduto(this.form);
+        this.showSuccess(this.isEdicao ? 'Produto editado com sucesso' : 'Produto adicionado com sucesso!');
         this.router.push('/produtos');
-      }, 1000);
-      console.log(this.form)
+      } catch (e) {
+        this.showError(`Erro ao adicionar produto: ${e.message}`);
+      } finally {
+        this.carregando = false;
+      }
     },
 
     required(value) {
