@@ -121,7 +121,7 @@
                         :rules="[required]"
                         clearable
                         color="primary"
-                        item-title="description"
+                        item-title="name"
                         item-value="id"
                         label="Fornecedor"
                         prepend-inner-icon="mdi-truck"
@@ -209,7 +209,7 @@
             class="ml-5"
             color="primary"
             prepend-icon="mdi-plus"
-            size="large"
+            size="x-large"
             variant="elevated"
             width="200"
             @click="confirmar()"
@@ -220,7 +220,7 @@
             class="ml-5 mt-5"
             color="primary"
             prepend-icon="mdi-pencil"
-            size="large"
+            size="x-large"
             variant="outlined"
             width="200"
             @click="dialogConfirmacao = false"
@@ -257,16 +257,7 @@ export default {
         }
       ],
       dialogConfirmacao: false,
-      fornecedores: [
-        {
-          id: 1,
-          description: 'Fornecedor 1',
-        },
-        {
-          id: 2,
-          description: 'Fornecedor 2',
-        }
-      ],
+      fornecedores: [],
       form: {
         description: '',
         price: '',
@@ -288,7 +279,7 @@ export default {
     },
 
     getFornecedor() {
-      return this.fornecedores.find(fornecedor => fornecedor.id === this.form.supplierId).description;
+      return this.fornecedores.find(fornecedor => fornecedor.id === this.form.supplierId).name;
     },
   },
 

@@ -6,148 +6,124 @@
     <v-card-title class="d-flex justify-space-between">
       <div>
         <p class="text-success">
-          Faturamento total: R${{ faturamentoTotal.toFixed(2) }}
+          Faturamento total: R${{ faturamentoTotal.toFixed(2).replace('.', ',') }}
         </p>
       </div>
       <v-btn
         aria-labelledby="tooltip-exportar-relatorio"
-        color="red"
+        color="success"
         size="x-large"
+        text="Exportar Relatório"
         variant="elevated"
-        @click="exportarRelatorio">
+        @click="gerarRelatorioVendasXLSX">
         <template v-slot:prepend>
           <v-img
-            alt="Exportar PDF"
+            alt="Imagem Excel do botão de exportar relatório"
             height="30"
-            src="/pdf.png"
+            src="/excel.png"
             width="30"/>
         </template>
-
-        <p>
-          Exportar PDF
-        </p>
       </v-btn>
     </v-card-title>
     <v-card-text>
-      <v-table
-        class="table mt-10">
-        <thead
-          class="table-header text-primary">
-        <tr>
-          <th class="text-left">
-            <p>
-              ID
-            </p>
-          </th>
-          <th>
-            <p>
-              Data
-            </p>
-          </th>
-          <th>
-            <p>
-              Número de Itens
-            </p>
-          </th>
-          <th>
-            <p>
-              Valor Total
-            </p>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr
-          v-for="venda in vendas"
-          :key="venda.id">
-          <td>
-            <p>
-              {{ venda.id }}
-            </p>
-          </td>
-          <td>
-            <p>
-              {{ venda.creationDate }}
-            </p>
-          </td>
-          <td>
-            <p>
-              {{ venda.products.length }}
-            </p>
-          </td>
-          <td>
-            <p>
-              R${{ venda.totalValue.toFixed(2) }}
-            </p>
-          </td>
-        </tr>
-        </tbody>
-      </v-table>
+      <v-data-table
+        v-model:expanded="expanded"
+        :headers="headers"
+        :items="vendas"
+        class="mt-10"
+        disable-sort
+        item-value="id"
+        items-per-page-text="Itens por página"
+        show-expand
+      >
+        <template v-slot:item.saleDate="{ item }">
+          <p>{{ new Date(item.saleDate).toLocaleDateString() }}</p>
+        </template>
+        <template v-slot:item.totalValue="{ item }">
+          <p>R$ {{ Number(item.totalValue).toFixed(2).replace('.', ',') }}</p>
+        </template>
+        <template v-slot:item.data-table-expand="{ internalItem, toggleExpand, isExpanded }">
+          <v-btn
+            :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+            color="primary"
+            size="x-large"
+            text="Produtos"
+            variant="outlined"
+            @click="toggleExpand(internalItem)"
+          >
+          </v-btn>
+        </template>
+        <template v-slot:expanded-row="{ columns, item }">
+          <tr>
+            <td
+              :colspan="columns.length"
+              class="py-5">
+              <v-data-table
+                :headers="headersProdutos"
+                :items="item.products"
+                disable-sort
+                hide-default-footer
+              >
+                <template v-slot:top>
+                  <p class="py-2 text-primary font-weight-bold">
+                    Produtos
+                  </p>
+                </template>
+              </v-data-table>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
     </v-card-text>
-    <v-card-actions>
-      <div class="w-100 d-flex justify-space-between">
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-label>
-              Itens por página:
-              <v-card
-                aria-label="Clique para alterar a quantidade de itens por página."
-                class="px-2 py-1 ml-5"
-                hover
-                role="button"
-                rounded="lg"
-                v-bind="props"
-                variant="outlined">
-                {{ itensPorPagina }}
-                <v-icon
-                  class="ml-1">mdi-chevron-down
-                </v-icon>
-              </v-card>
-            </v-label>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, i) in menuPaginacao"
-              :key="i"
-              @click="selecionarItensPorPagina(item)"
-            >
-              <v-list-item-title>
-                {{ item }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <div>
-          <v-label>
-            Página {{ paginaAtual }} de {{ totalPaginas }}
-            <v-pagination
-              :length="5"
-              :total-visible="5"
-              rounded></v-pagination>
-          </v-label>
-        </div>
-      </div>
-    </v-card-actions>
   </v-card>
 </template>
 <script>
-import {mapState} from 'pinia';
+import {mapActions, mapState} from 'pinia';
 import {useRelatorioVendasStore} from "@/stores/relatorio-vendas";
 
 export default {
   data: () => (
-    {}
+    {
+      expanded: [],
+      headers: [
+        {
+          title: 'Data da Venda',
+          align: 'start',
+          sortable: false,
+          key: 'saleDate',
+        },
+        {title: 'Valor Total', key: 'totalValue'},
+        {title: 'Quantidade de Itens', key: 'totalItems'},
+        {title: 'Ações', key: 'data-table-expand'},
+      ],
+      headersProdutos: [
+        {title: 'Descrição', key: 'description'},
+        {title: 'Quantidade', key: 'quantity'},
+        {title: 'Valor Unitário', key: 'price'},
+        {title: 'Valor Total', key: 'totalValue'},
+      ]
+    }
   ),
   computed: {
     ...mapState(useRelatorioVendasStore, ['vendas', 'itensPorPagina', 'totalPaginas', 'paginaAtual']),
 
     faturamentoTotal() {
-      return this.vendas.reduce((acc, venda) => acc + venda.totalValue, 0);
+      if (this.vendas && this.vendas.length > 0) {
+        const totalValue = this.vendas
+          .map(venda => Number(venda.totalValue))
+          .reduce((acc, totalValue) => acc + totalValue, 0);
+        console.log(totalValue)
+        return totalValue;
+      }
+      return 0;
     },
   },
   created() {
   },
-  methods: {}
+  methods: {
+    ...mapActions(useRelatorioVendasStore, ['gerarRelatorioVendasXLSX']),
+
+  }
 }
 </script>
 <style scoped>

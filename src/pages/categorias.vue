@@ -60,24 +60,7 @@ export default {
           campo: 'description'
         },
       ],
-      categorias: [
-        {
-          id: 1,
-          description: 'Refrigerante',
-        },
-        {
-          id: 2,
-          description: 'Líquido',
-        },
-        {
-          id: 3,
-          description: 'Bebida Alcoólica',
-        },
-        {
-          id: 4,
-          description: 'Suco',
-        },
-      ],
+      categorias: [],
       itensPorPagina: 10,
       paginaAtual: 1,
       quantidadePaginas: 5,

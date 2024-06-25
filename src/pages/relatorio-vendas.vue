@@ -31,47 +31,59 @@
           <v-card class="mt-5">
             <v-card-title>
               <v-container>
-                <v-row class="mt-2">
-                  <v-col cols="12" md="5">
-                    <v-date-input
-                      v-model="form.dataInicial"
-                      aria-label="Data inicial"
-                      color="primary"
-                      label="Data inicial"
-                      role="combobox"
-                      title="Data inicial"
-                      variant="outlined">
-                    </v-date-input>
-                  </v-col>
-                  <v-col cols="12" md="5">
-                    <v-date-input
-                      v-model="form.dataFinal"
-                      aria-label="Data final"
-                      color="primary"
-                      label="Data final"
-                      role="combobox"
-                      title="Data final"
-                      variant="outlined">
-                    </v-date-input>
-                  </v-col>
-                  <v-col cols="12" md="2">
-                    <v-btn
-                      class="w-100 mt-2"
-                      color="primary"
-                      prepend-icon="mdi-magnify"
-                      size="x-large"
-                      variant="elevated"
-                      @click="buscarVendas()"
-                    >
-                      Aplicar
-                    </v-btn>
-                  </v-col>
-                </v-row>
+                <v-form
+                  v-model="isFormValido"
+                  @submit="buscarVendas">
+                  <v-row class="mt-2">
+                    <v-col cols="12" md="5">
+                      <v-text-field
+                        v-model="form.startDate"
+                        v-mask="'##/##/####'"
+                        :rules="[required, data]"
+                        color="primary"
+                        label="Data Inicial"
+                        placeholder="DD/MM/AAAA"
+                        prepend-inner-icon="mdi-calendar"
+                        rounded="lg"
+                        variant="outlined">
+                      </v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="5">
+                      <v-text-field
+                        v-model="form.endDate"
+                        v-mask="'##/##/####'"
+                        :rules="[required, data]"
+                        color="primary"
+                        label="Data Final"
+                        placeholder="DD/MM/AAAA"
+                        prepend-inner-icon="mdi-calendar"
+                        rounded="lg"
+                        variant="outlined">
+                      </v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="2">
+                      <v-btn
+                        class="w-100 mt-2"
+                        color="primary"
+                        prepend-icon="mdi-magnify"
+                        size="x-large"
+                        variant="elevated"
+                      >
+                        Aplicar
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-form>
               </v-container>
             </v-card-title>
             <v-card-text>
               <v-container>
-                <TabelaRelatorioVendas/>
+                <v-skeleton-loader
+                  v-if="carregando"
+                  class="mt-5"
+                  height="50">
+                </v-skeleton-loader>
+                <TabelaRelatorioVendas v-else/>
               </v-container>
             </v-card-text>
           </v-card>
@@ -84,17 +96,21 @@
 <script>
 import Breadcrumbs from "@/components/breadcrumbs.vue";
 import {useRoute, useRouter} from "vue-router";
-import {VDateInput} from "vuetify/labs/components";
 import TabelaRelatorioVendas from "@/components/relatorio-vendas/tabela-relatorio-vendas.vue";
+import {mapWritableState, mapActions} from "pinia";
+import {useRelatorioVendasStore} from "@/stores/relatorio-vendas";
+import {useVendasStore} from "@/stores/vendas";
+import {useAlertStore} from "@/stores/alert";
 
 export default {
   components: {
     TabelaRelatorioVendas,
     Breadcrumbs,
-    VDateInput
   },
 
   computed: {
+    ...mapWritableState(useRelatorioVendasStore, ['vendas']),
+
     breadcrumbs() {
       return this.route.meta.breadcrumbs();
     },
@@ -103,23 +119,45 @@ export default {
     }
   },
 
-  created() {
+  async created() {
     const dataAtual = new Date();
     const primeiroDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
-    this.form.dataInicial = primeiroDiaDoMes;
-    this.form.dataFinal = dataAtual;
+    this.form.startDate = primeiroDiaDoMes.toLocaleString();
+    this.form.endDate = dataAtual.toLocaleString();
+    await this.buscarVendas();
   },
 
   data: () => ({
+    carregando: true,
     form: {
-      dataInicial: null,
-      dataFinal: null,
+      startDate: null,
+      endDate: null,
     }
   }),
 
   methods: {
-    selecionarData() {
-      console.log(this.form);
+    ...mapActions(useVendasStore, ['buscarVendasPorIntervalo']),
+    ...mapActions(useAlertStore, ['showError']),
+
+    data(value) {
+      const dateRegex = /\b(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/([0-9]{4})\b/;
+      return dateRegex.test(value) || 'Data inválida.';
+    },
+
+    required(value) {
+      return !!value || 'Campo obrigatório';
+    },
+
+    async buscarVendas() {
+      this.carregando = true;
+      try {
+        this.vendas = await this.buscarVendasPorIntervalo(this.form);
+      } catch (e) {
+        console.error(e);
+        this.showError('Erro ao buscar vendas!');
+      } finally {
+        this.carregando = false;
+      }
     },
 
     voltar() {

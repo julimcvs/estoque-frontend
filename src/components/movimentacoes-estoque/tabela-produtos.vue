@@ -17,11 +17,6 @@
         </th>
         <th>
           <p>
-            Fornecedor
-          </p>
-        </th>
-        <th>
-          <p>
             Preço
           </p>
         </th>
@@ -64,9 +59,6 @@
         </td>
         <td>
           <p>{{ produto.description }}</p>
-        </td>
-        <td>
-          <p>{{ produto.supplier }}</p>
         </td>
         <td>
           <p>{{ getPreco(produto.price) }}</p>
@@ -144,7 +136,7 @@ export default {
     },
 
     getPreco(preco) {
-      return `R$ ${preco.toFixed(2)}`;
+      return `R$ ${Number(preco).toFixed(2)}`;
     },
   },
 

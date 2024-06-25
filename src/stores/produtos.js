@@ -15,6 +15,12 @@ export const useProdutosStore = defineStore('produtos', {
       return data;
     },
 
+    async buscarTodosProdutos() {
+      const url = `${import.meta.env.VITE_API_URL}/product`;
+      const {data} = await axios.get(url);
+      return data;
+    },
+
     async buscarProdutoPorId(id) {
       const url = `${import.meta.env.VITE_API_URL}/product/${id}`;
       const {data} = await axios.get(url);

@@ -62,16 +62,20 @@ export default {
 
   methods: {
     ...mapActions(useAlertStore, ['showSuccess', 'showError']),
-    ...mapActions(useMovimentacaoEstoqueStore, ['limparFormulario']),
+    ...mapActions(useMovimentacaoEstoqueStore, ['limparFormulario', 'movimentarEstoque']),
 
-    confirmar() {
+    async confirmar() {
       this.loading = true;
-      setTimeout(() => {
+      try {
+        await this.movimentarEstoque(this.form);
+        this.showSuccess('Movimentação de estoque realizada com sucesso!');
         this.limparFormulario();
+        this.$router.push('/home')
+      } catch (e) {
+        this.showError('Erro ao movimentar estoque!');
+      } finally {
         this.loading = false;
-        this.showSuccess('Movimentação realizada com sucesso!');
-        this.$router.push('/home');
-      }, 1000);
+      }
     },
 
     prev() {

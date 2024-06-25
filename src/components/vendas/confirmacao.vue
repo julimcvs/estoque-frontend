@@ -57,16 +57,20 @@ export default {
 
   methods: {
     ...mapActions(useAlertStore, ['showSuccess', 'showError']),
-    ...mapActions(useVendasStore, ['limparFormulario']),
+    ...mapActions(useVendasStore, ['limparFormulario', 'realizarVenda']),
 
-    confirmar() {
+    async confirmar() {
       this.loading = true;
-      setTimeout(() => {
+      try {
+        await this.realizarVenda(this.form);
+        this.showSuccess('Venda efetuada com sucesso!');
         this.limparFormulario();
+        this.$router.push('/home')
+      } catch (e) {
+        this.showError('Erro ao efetuar venda!');
+      } finally {
         this.loading = false;
-        this.showSuccess('Venda realizada com sucesso!');
-        this.$router.push('/home');
-      }, 1000);
+      }
     },
 
     prev() {

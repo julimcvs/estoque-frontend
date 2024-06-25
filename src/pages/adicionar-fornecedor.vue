@@ -22,7 +22,7 @@
             class="container mt-5 pa-5"
             elevation="5"
             variant="elevated">
-            <v-form fast-fail @submit.prevent="adicionarFornecedor">
+            <v-form fast-fail @submit.prevent="adicionar">
               <v-card-title>
                 <v-container>
                   <h1>
@@ -199,7 +199,7 @@ export default {
     const query = this.route.query;
     if (query?.id) {
       this.isEdicao = true;
-      this.buscarFornecedorPorId(query.id);
+      this.buscarPorId(query.id);
     }
   },
 
@@ -207,11 +207,11 @@ export default {
     ...mapActions(useAlertStore, ['showSuccess', 'showError']),
     ...mapActions(useFornecedoresStore, ['adicionarFornecedor', 'buscarFornecedorPorId']),
 
-    adicionarFornecedor() {
+    adicionar() {
       this.dialogConfirmacao = true;
     },
 
-    async buscarFornecedorPorId(id) {
+    async buscarPorId(id) {
       this.form = await this.buscarFornecedorPorId(id);
     },
 

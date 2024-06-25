@@ -16,6 +16,15 @@
   font-size: 25px !important;
 }
 
+.v-data-table__td {
+  padding: 10px 0 !important;
+  font-size: 25px !important;
+}
+
+.v-data-table-footer__items-per-page > .v-select {
+  width: 110px;
+}
+
 .v-label {
   opacity: 1;
   font-size: 25px;

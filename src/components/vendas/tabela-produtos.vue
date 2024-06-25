@@ -164,7 +164,7 @@ export default {
     },
 
     getPreco(preco) {
-      return `R$ ${preco.toFixed(2)}`;
+      return `R$ ${Number(preco).toFixed(2)}`;
     },
   },
 

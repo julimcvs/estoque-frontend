@@ -67,9 +67,10 @@
   </v-container>
 </template>
 <script>
-import {mapState, mapWritableState} from "pinia";
+import {mapActions, mapState, mapWritableState} from "pinia";
 import {useMovimentacaoEstoqueStore} from "@/stores/movimentacao-estoque";
 import TabelaProdutosMovimentacao from "@/components/movimentacoes-estoque/tabela-produtos.vue";
+import {useProdutosStore} from "@/stores/produtos";
 
 export default {
   name: 'SelecionarProdutosMovimentacao',
@@ -79,19 +80,24 @@ export default {
   }),
 
   computed: {
-    ...mapState(useMovimentacaoEstoqueStore, ['produtos']),
-    ...mapWritableState(useMovimentacaoEstoqueStore, ['form', 'currentStep']),
+    ...mapWritableState(useMovimentacaoEstoqueStore, ['produtos', 'form', 'currentStep']),
 
     produtosSelecionados() {
       return this.form.produtosSelecionados.map(produto => produto.id);
     }
   },
 
-  created() {
+  async created() {
+    await this.buscarProdutos();
   },
 
   methods: {
-    useMovimentacaoEstoqueStore,
+    ...mapActions(useProdutosStore, ['buscarTodosProdutos']),
+
+    async buscarProdutos() {
+      this.produtos = await this.buscarTodosProdutos();
+    },
+
     minLength(value) {
       return value.length > 0 || 'Selecione pelo menos um produto';
     },

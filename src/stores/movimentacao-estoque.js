@@ -1,4 +1,5 @@
 import {defineStore} from "pinia";
+import axios from "axios";
 
 export const useMovimentacaoEstoqueStore = defineStore('movimentacao-estoque', {
   state: () => ({
@@ -27,78 +28,7 @@ export const useMovimentacaoEstoqueStore = defineStore('movimentacao-estoque', {
         icon: 'mdi-package-up',
       },
     ],
-    produtos: [
-      {
-        id: 1,
-        description: 'Coca-Cola',
-        price: 5.00,
-        category: 'Refrigerante',
-        supplier: 'Coca-Cola'
-      },
-      {
-        id: 2,
-        description: 'Pepsi',
-        price: 4.50,
-        category: 'Refrigerante',
-        supplier: 'Pepsi'
-      },
-      {
-        id: 3,
-        description: 'Fanta',
-        price: 4.00,
-        category: 'Refrigerante',
-        supplier: 'Coca-Cola'
-      },
-      {
-        id: 4,
-        description: 'Sprite',
-        price: 3.50,
-        category: 'Refrigerante',
-        supplier: 'Coca-Cola'
-      },
-      {
-        id: 5,
-        description: 'Guaraná',
-        price: 3.00,
-        category: 'Refrigerante',
-        supplier: 'Guaraná Antártica'
-      },
-      {
-        id: 6,
-        description: 'Água',
-        price: 2.50,
-        category: 'Líquido',
-        supplier: 'Igarapé'
-      },
-      {
-        id: 7,
-        description: 'Suco',
-        price: 2.00,
-        category: 'Líquido',
-        supplier: 'Del Valle'
-      },
-      {
-        id: 8,
-        description: 'Guarapan',
-        price: 1.50,
-        category: 'Refrigerante',
-        supplier: 'Coca-Cola'
-      },
-      {
-        id: 9,
-        description: 'Cerveja',
-        price: 1.00,
-        category: 'Bebida Alcoólica',
-        supplier: 'Bohemia'
-      },
-      {
-        id: 10,
-        description: 'Vinho',
-        price: 0.50,
-        category: 'Bebida Alcoólica',
-        supplier: 'Pérgola'
-      }
-    ],
+    produtos: [],
     form: {
       tipoMovimentacao: null,
       produtosSelecionados: []
@@ -114,6 +44,19 @@ export const useMovimentacaoEstoqueStore = defineStore('movimentacao-estoque', {
         produto.amount = null;
       });
       this.currentStep = 0;
+    },
+
+    async movimentarEstoque(form) {
+      const stocks = form.produtosSelecionados.map(produto => ({
+        productId: produto.id,
+        quantity: produto.amount
+      }));
+      const body = {
+        stocks,
+        add: form.tipoMovimentacao.title === 'Entrada'
+      }
+      const url = `${import.meta.env.VITE_API_URL}/stock`;
+      await axios.post(url, body);
     }
   }
 })
