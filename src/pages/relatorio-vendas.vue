@@ -154,7 +154,7 @@ export default {
         this.vendas = await this.buscarVendasPorIntervalo(this.form);
       } catch (e) {
         console.error(e);
-        this.showError('Erro ao buscar vendas!');
+        this.showError(`Erro ao buscar vendas: ${e.response.data.message}`);
       } finally {
         this.carregando = false;
       }

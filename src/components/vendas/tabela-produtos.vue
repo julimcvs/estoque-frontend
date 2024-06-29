@@ -17,11 +17,6 @@
         </th>
         <th>
           <p>
-            Fornecedor
-          </p>
-        </th>
-        <th>
-          <p>
             Preço
           </p>
         </th>
@@ -65,11 +60,6 @@
         <td>
           <p>
             {{ produto.description }}
-          </p>
-        </td>
-        <td>
-          <p>
-            {{ produto.supplier }}
           </p>
         </td>
         <td>

@@ -104,7 +104,7 @@ export default {
         await this.excluirProduto(produto.id);
         this.produtos.splice(this.produtos.indexOf(produto), 1);
       } catch (e) {
-        this.showError(`Erro ao excluir produto: ${e.message}`);
+        this.showError(`Erro ao excluir produto: ${e.response.data.message}`);
       }
     },
 

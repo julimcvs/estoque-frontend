@@ -67,7 +67,7 @@ export default {
         this.limparFormulario();
         this.$router.push('/home')
       } catch (e) {
-        this.showError('Erro ao efetuar venda!');
+        this.showError(`Erro ao efetuar venda: ${e.response.data.message}`);
       } finally {
         this.loading = false;
       }

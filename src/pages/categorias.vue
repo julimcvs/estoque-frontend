@@ -97,7 +97,7 @@ export default {
         await this.excluirCategoria(categoria.id);
         this.categorias.splice(this.categorias.indexOf(categoria), 1);
       } catch (e) {
-        this.showError(`Erro ao excluir categoria: ${e.message}`);
+        this.showError(`Erro ao excluir categoria: ${e.response.data.message}`);
       }
     },
 

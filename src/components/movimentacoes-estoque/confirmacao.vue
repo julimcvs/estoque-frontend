@@ -72,7 +72,7 @@ export default {
         this.limparFormulario();
         this.$router.push('/home')
       } catch (e) {
-        this.showError('Erro ao movimentar estoque!');
+        this.showError(`Erro ao movimentar estoque: ${e.response.data.message}`);
       } finally {
         this.loading = false;
       }

@@ -33,7 +33,7 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col cols="12" md="9" sm="6">
+                    <v-col cols="12" xl="9">
                       <v-text-field
                         v-model="form.name"
                         :rules="[required, maxLength]"
@@ -58,7 +58,7 @@
                         </template>
                       </v-text-field>
                     </v-col>
-                    <v-col cols="12" md="3" sm="6">
+                    <v-col cols="12" xl="3">
                       <v-text-field
                         v-model="form.contact"
                         v-mask="'(##) #####-####'"
@@ -222,9 +222,10 @@ export default {
         this.showSuccess(this.isEdicao ? 'Fornecedor editado com sucesso' : 'Fornecedor adicionado com sucesso!');
         this.router.push('/fornecedores');
       } catch (e) {
-        this.showError(`Erro ao adicionar fornecedor: ${e.message}`);
+        this.showError(`Erro ao adicionar fornecedor: ${e.response.data.message}`);
       } finally {
         this.carregando = false;
+        this.dialogConfirmacao = false;
       }
     },
 

@@ -60,33 +60,7 @@ export default {
           campo: 'contact'
         },
       ],
-      fornecedores: [
-        {
-          id: 999,
-          name: 'Atlas',
-          contact: '(32) 3343-4397'
-        },
-        {
-          id: 998,
-          name: 'Suvinil',
-          contact: '(38) 2872-6102'
-        },
-        {
-          id: 997,
-          name: 'Coral',
-          contact: '(11) 3343-4397'
-        },
-        {
-          id: 996,
-          name: 'Sherwin Williams',
-          contact: '(32) 3343-4397'
-        },
-        {
-          id: 5,
-          name: 'Tintas Renner',
-          contact: '(32) 3343-4397'
-        },
-      ],
+      fornecedores: [],
       itensPorPagina: 10,
       paginaAtual: 1,
       quantidadePaginas: 5,
@@ -122,7 +96,7 @@ export default {
         await this.excluirFornecedor(fornecedor.id);
         this.fornecedores.splice(this.fornecedores.indexOf(fornecedor), 1);
       } catch (e) {
-        this.showError(`Erro ao excluir fornecedor: ${e.message}`);
+        this.showError(`Erro ao excluir fornecedor: ${e.response.data.message}`);
       }
     },
 

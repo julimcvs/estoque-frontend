@@ -88,11 +88,11 @@
         >
           <td
             v-for="header in headers"
-            class="field">
+            class="field text-wrap">
             <p>{{ item[header.campo] }}</p>
           </td>
           <td class="py-10 d-flex align-center justify-center">
-            <div>
+            <div class="d-flex justify-center">
               <v-btn
                 :aria-labelledby="`tooltip-editar-produto-${i}`"
                 color="primary"

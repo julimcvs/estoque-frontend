@@ -189,9 +189,10 @@ export default {
         this.showSuccess(this.isEdicao ? 'Categoria editada com sucesso' : 'Categoria adicionada com sucesso!');
         this.router.push('/categorias');
       } catch (e) {
-        this.showError(`Erro ao adicionar categoria: ${e.message}`);
+        this.showError(`Erro ao adicionar categoria: ${e.response.data.message}`);
       } finally {
         this.carregando = false;
+        this.dialogConfirmacao = false;
       }
     },
 

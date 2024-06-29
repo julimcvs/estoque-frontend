@@ -171,7 +171,7 @@
     fullscreen
     transition="dialog-bottom-transition">
     <v-card
-      class="container mt-5 pa-5"
+      class="container pa-5"
       elevation="5"
       variant="elevated">
       <v-card-title>
@@ -284,13 +284,13 @@ export default {
   },
 
   async created() {
+    await this.buscarCategorias();
+    await this.buscarFornecedores();
     const query = this.route.query;
     if (query?.id) {
       this.isEdicao = true;
       await this.buscarPorId(query.id);
     }
-    await this.buscarCategorias();
-    await this.buscarFornecedores();
   },
 
   methods: {
@@ -304,7 +304,12 @@ export default {
     },
 
     async buscarPorId(id) {
-      this.form = await this.buscarProdutoPorId(id);
+      const produto = await this.buscarProdutoPorId(id);
+      this.form = {
+        ...produto,
+        categoryId: produto.category.id,
+        supplierId: produto.supplier.id
+      }
     },
 
     async buscarCategorias() {
@@ -322,9 +327,10 @@ export default {
         this.showSuccess(this.isEdicao ? 'Produto editado com sucesso' : 'Produto adicionado com sucesso!');
         this.router.push('/produtos');
       } catch (e) {
-        this.showError(`Erro ao adicionar produto: ${e.message}`);
+        this.showError(`Erro ao adicionar produto: ${e.response.data.message}`);
       } finally {
         this.carregando = false;
+        this.dialogConfirmacao = false;
       }
     },
 
